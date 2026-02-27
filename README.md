@@ -20,6 +20,8 @@ The program should do the following:
 > If you use ai *cough cough* TechKidJr *cough cough* then that defeats the whole purpose of this project.
 
 ## Sources:
- - 
+ >[!NOTE]
+ > Added sources to let other and ourselves understand the code.
+ 
 ###### README.md by TechKidJr & Advaith. (If we ever make this public)
 #
