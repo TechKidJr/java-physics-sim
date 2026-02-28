@@ -11,7 +11,6 @@ public class Main {
         System.out.println("TestPrint Line for Java");
         JFrame frame = new JFrame("Physics Sim");
         System.out.println("Looking for resource: " + Main.class.getResource("/bionic.png"));
-        javax.swing.JLabel label = new javax.swing.JLabel("Hello World!");
 
 
         // Setting the size of the frame.
@@ -19,7 +18,6 @@ public class Main {
 
         // Setting the bPaneackground color of the frame to Black (for now).
         frame.getContentPane().setBackground(java.awt.Color.BLACK);
-        frame.getContentPane().add(label);
 
         Image icon = new ImageIcon(Main.class.getResource("/bionic.png")).getImage();
 
