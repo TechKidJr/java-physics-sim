@@ -1,7 +1,3 @@
-import javax.swing.JFrame;
-import javax.swing.ImageIcon;
-import java.awt.Image;
-import java.awt.Toolkit;
 import java.awt.*;
 import javax.swing.*;
 
@@ -11,8 +7,43 @@ public class Main {
         System.out.println("TestPrint Line for Java");
         JFrame frame = new JFrame("Physics Sim");
         System.out.println("Looking for resource: " + Main.class.getResource("/bionic.png"));
+        JMenuBar menuBar = new JMenuBar(); 
+        JMenu aboutMenu = new JMenu("About");
+        JMenu blockMenu = new JMenu("Blocks");
+        JMenuItem infoItem = new JMenuItem("Info");
+        JMenuItem cubeItem = new JMenuItem("Cube");
+        JMenuItem sphereItem = new JMenuItem("Sphere");
 
+        // Set the font of the menus to Comfortaa, size 10.
+        aboutMenu.setFont(new Font("Comfortaa", Font.PLAIN,10));
+        blockMenu.setFont(new Font("Comfortaa", Font.PLAIN, 10));
+        
+        // Set the font of the menu items to Comfortaa, size 10.
+        infoItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
+        cubeItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
+        sphereItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
 
+        // Add items to their respective menus.
+        aboutMenu.add(infoItem);
+        blockMenu.add(cubeItem);
+        blockMenu.add(sphereItem);
+        
+        // Add the menu to the menu bar!
+        menuBar.add(aboutMenu);
+        menuBar.add(blockMenu);
+        frame.setJMenuBar(menuBar);
+
+        infoItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "Java Physics Sim\nVersion 0.0.0 ALPHA\n\nCreate by: Advaith and Kidanny\n Published by Bionic.");
+        });
+
+        cubeItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "A cube should spawn here, remove this once feature is implemented. (PLACEHOLDER)");
+        });
+
+        sphereItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "A sphere should spawn here, remove this once feature is implemented. (PLACEHOLDER)");
+        });
         // Setting the size of the frame.
         frame.setSize(1920, 1080);
 
