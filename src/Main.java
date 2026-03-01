@@ -5,8 +5,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         // Test Print Line for Java
         System.out.println("TestPrint Line for Java");
+
         JFrame frame = new JFrame("Physics Sim");
-        System.out.println("Looking for resource: " + Main.class.getResource("/bionic.png"));
         JMenuBar menuBar = new JMenuBar(); 
         JMenu aboutMenu = new JMenu("About");
         JMenu blockMenu = new JMenu("Blocks");
@@ -34,7 +34,7 @@ public class Main {
         frame.setJMenuBar(menuBar);
 
         infoItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "Java Physics Sim\nVersion 0.0.0 ALPHA\n\nCreate by: Advaith and Kidanny\n Published by Bionic.");
+            JOptionPane.showMessageDialog(frame, "Java Physics Sim\nVersion 0.0.1 ALPHA\n\nCreated by: Advaith and Kidanny\n Published by Bionic.");
         });
 
         cubeItem.addActionListener(e -> {
