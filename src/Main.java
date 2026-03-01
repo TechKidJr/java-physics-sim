@@ -34,7 +34,7 @@ public class Main {
         frame.setJMenuBar(menuBar);
 
         infoItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "Java Physics Sim\nVersion 0.0.1 ALPHA\n\nCreated by: Advaith and Kidanny\n Published by Bionic.");
+            JOptionPane.showMessageDialog(frame, "Java Physics Sim\nVersion 0.0.1 ALPHA\n\nCreated by: Advaith and Kidanny\nPublished by Bionic.");
         });
 
         cubeItem.addActionListener(e -> {
