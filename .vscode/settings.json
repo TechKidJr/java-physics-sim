@@ -2,6 +2,8 @@
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "lib/**/*.jar",
+        "c:\\Users\\advai\\Downloads\\jbullet-20101010\\jbullet-20101010\\lib\\vecmath\\vecmath.jar",
+        "c:\\Users\\advai\\Downloads\\jbullet-20101010\\jbullet-20101010\\dist\\jbullet.jar"
     ]
 }
