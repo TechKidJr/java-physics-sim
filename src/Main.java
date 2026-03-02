@@ -7,6 +7,7 @@ public class Main {
         System.out.println("TestPrint Line for Java");
 
         JFrame frame = new JFrame("Physics Sim");
+        // Renderer render = new Renderer();
         JMenuBar menuBar = new JMenuBar(); 
         JMenu aboutMenu = new JMenu("About");
         JMenu blockMenu = new JMenu("Blocks");
@@ -63,5 +64,7 @@ public class Main {
         frame.getContentPane().setForeground(Color.WHITE);
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // render.render();
     }
 }
