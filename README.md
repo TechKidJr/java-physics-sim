@@ -1,6 +1,6 @@
 # Java Physics Simulator
 >[!NOTE]
-> This is a challange for mainly @TechKidJr & @agit670 to not use AI at all. (Mainly TechKidJr's problem but eh ¯\_(ツ)_/¯)
+> This is a challange for mainly @TechKidJr & @agit760 to not use AI at all. (Mainly TechKidJr's problem but eh ¯\_(ツ)_/¯)
 
 # Setup
 Use only pure Java, no other programming languages.
