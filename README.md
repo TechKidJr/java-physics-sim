@@ -7,7 +7,7 @@ Use only pure Java, no other programming languages.
 The program should do the following:
   - Simulate Physics
   - Simulate Physics of a Cube
-# Required Dependancies:
+# Required Dependencies:
 >[!NOTE]
 >The Java Physics Simulation will **not** work without these installed.
 >vecmath.jar, jbullet.jar, and stack-alloc.jar
