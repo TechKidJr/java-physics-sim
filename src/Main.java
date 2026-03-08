@@ -1,13 +1,22 @@
 import java.awt.*;
+
+import org.jogamp.java3d.Canvas3D;
 import javax.swing.*;
+
+import org.jogamp.java3d.utils.universe.SimpleUniverse;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         // Test Print Line for Java
         System.out.println("TestPrint Line for Java");
 
-        JFrame frame = new JFrame("Physics Sim");
-        // Renderer render = new Renderer();
+        JFrame frame = new JFrame("Physics Sim");  
+        
+        GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();     
+        Canvas3D canvas = new Canvas3D(config);
+        SimpleUniverse universe = new SimpleUniverse(canvas);
+        Renderer render = new Renderer();
+
         JMenuBar menuBar = new JMenuBar(); 
         JMenu aboutMenu = new JMenu("About");
         JMenu blockMenu = new JMenu("Blocks");
@@ -65,6 +74,6 @@ public class Main {
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // render.render();
+        universe.addBranchGraph(render.render());
     }
 }

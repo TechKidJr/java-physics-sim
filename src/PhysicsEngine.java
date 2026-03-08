@@ -1,5 +1,5 @@
 import com.bulletphysics.*;
-import javax.vecmath.Vector3f;
+import org.jogamp.vecmath.Vector3f;
 
 //Not finished, just a start to the file.
 public class PhysicsEngine {
