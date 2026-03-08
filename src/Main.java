@@ -14,8 +14,11 @@ public class Main {
         
         GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();     
         Canvas3D canvas = new Canvas3D(config);
+        canvas.enableInputMethods(true);
         SimpleUniverse universe = new SimpleUniverse(canvas);
         Renderer render = new Renderer();
+
+        frame.add(canvas);
 
         JMenuBar menuBar = new JMenuBar(); 
         JMenu aboutMenu = new JMenu("About");
@@ -64,6 +67,11 @@ public class Main {
 
         frame.setIconImage(icon);
 
+        
+        universe.addBranchGraph(render.render(canvas));
+
+        universe.getViewingPlatform().setNominalViewingTransform();
+
 
         // Setting the frame to visible :shock:
         frame.setVisible(true);
@@ -74,6 +82,5 @@ public class Main {
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        universe.addBranchGraph(render.render());
     }
 }
