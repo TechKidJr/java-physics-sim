@@ -4,7 +4,6 @@ import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.java3d.utils.picking.behaviors.PickRotateBehavior;
 import org.jogamp.java3d.utils.picking.behaviors.PickTranslateBehavior;
 
-
 import org.jogamp.java3d.AmbientLight;
 import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.BoundingSphere;
@@ -31,6 +30,7 @@ public class Renderer {
     public BranchGroup render(Canvas3D canvas){
 
         root = new BranchGroup();
+        root.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
         root.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         root.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
         root.setCapability(BranchGroup.ALLOW_DETACH);
@@ -42,7 +42,9 @@ public class Renderer {
         pickMove = new PickTranslateBehavior(root, canvas, bounds);
         pickRotate = new PickRotateBehavior(root, canvas, bounds);
 
+
         pickMove.setMode(PickTool.BOUNDS);
+        pickRotate.setMode(PickTool.BOUNDS);
 
         //Transformations that affect the cubes
         TransformGroup transformCubes = new TransformGroup();
@@ -87,7 +89,8 @@ public class Renderer {
 
 
         //Lights
-        Color3f lightColor = new Color3f(0.2f, 0.3f, 0.2f);
+        //TODO: Adjust lighting color.
+        Color3f lightColor = new Color3f(0.2f, 0.3f, 0.2f); 
 
         AmbientLight aLight = new AmbientLight(lightColor);
         aLight.setInfluencingBounds(bounds);
@@ -106,8 +109,9 @@ public class Renderer {
         root.addChild(transformSpheres);
         root.addChild(aLight);
         root.addChild(dLight);
-        root.addChild(pickRotate);
         root.addChild(pickMove);
+        root.addChild(pickRotate);
+
 
 
         root.compile();
@@ -121,9 +125,15 @@ public class Renderer {
      * @return the cube object
      */
     public Box cubeGenerate(Appearance appearance){
-        Box cube = new Box(0.09f, 0.09f, 0.09f, Box.GENERATE_NORMALS, appearance);
-        cube.setCapability(Box.ENABLE_GEOMETRY_PICKING);
-        cube.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
+        Box cube = new Box(0.09f, 0.09f, 0.09f,
+            Box.GENERATE_NORMALS | 
+            Box.GEOMETRY_NOT_SHARED | 
+            Box.ENABLE_GEOMETRY_PICKING, 
+            appearance
+        ); //temp the size can change to our liking
+        cube.setCapability(Shape3D.ALLOW_PICKABLE_READ);
+        cube.setCapability(Shape3D.ALLOW_PICKABLE_WRITE);
+        cube.setPickable(true);
         return cube;
     }
 
@@ -133,10 +143,12 @@ public class Renderer {
      * @return the sphere object
      */
     public Sphere sphereGenerate(Appearance appearance){
-        Sphere sphere = new Sphere(0.09f, appearance);
-        sphere.getShape(Sphere.BODY);
+        Sphere sphere = new Sphere(0.09f, appearance); //temp the size can change to our liking.
+        sphere.getShape(Sphere.BODY).setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);;
         sphere.setCapability(Sphere.ENABLE_GEOMETRY_PICKING);
-        sphere.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
+        sphere.setCapability(Shape3D.ALLOW_PICKABLE_READ);
+        sphere.setCapability(Shape3D.ALLOW_PICKABLE_WRITE);
+        sphere.getShape(Sphere.BODY).setPickable(true);
         return sphere;
     }
     

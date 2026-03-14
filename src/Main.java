@@ -76,6 +76,8 @@ public class Main {
         // Setting the frame to visible :shock:
         frame.setVisible(true);
 
+        canvas.requestFocus();
+
         // https://bionic.wowzatm.me/bionic.png
 
         frame.getContentPane().setForeground(Color.WHITE);
