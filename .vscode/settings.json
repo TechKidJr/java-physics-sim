@@ -3,10 +3,21 @@
         "src"
     ],
     "java.project.outputPath": "bin",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "c:\\Users\\advai\\Downloads\\jbullet-20101010\\jbullet-20101010\\lib\\vecmath\\vecmath.jar",
-        "c:\\Users\\advai\\Downloads\\jbullet-20101010\\jbullet-20101010\\dist\\jbullet.jar",
-        "c:\\Users\\advai\\Downloads\\jbullet-20101010\\jbullet-20101010\\lib\\jstackalloc\\stack-alloc.jar"
-    ]
+    "java.project.referencedLibraries": {
+        "include": [
+            "lib/**/*.jar",
+            "c:\\Users\\advai\\Downloads\\jbullet-20101010\\jbullet-20101010\\dist\\jbullet.jar",
+            "c:\\Users\\advai\\Downloads\\jbullet-20101010\\jbullet-20101010\\lib\\jstackalloc\\stack-alloc.jar",
+            "c:\\Users\\advai\\Downloads\\java3d-core-1.7.1.jar",
+            "c:\\Users\\advai\\Downloads\\j3dutils.jar",
+            "c:\\Users\\advai\\Downloads\\vecmath.jar",
+            "c:\\Users\\advai\\Downloads\\jogl-all.jar",
+            "c:\\Users\\advai\\Downloads\\gluegen-rt.jar",
+            "c:\\Users\\advai\\Downloads\\gluegen-rt-natives-windows-amd64.jar",
+            "c:\\Users\\advai\\Downloads\\jogl-all-natives-windows-amd64.jar"
+        ],
+        "exclude": [
+            "c:\\Users\\advai\\Downloads\\j3d-core-1.5.2.jar"
+        ]
+    }
 }

@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED --add-modules=jdk.unsupported --add-opens=java.desktop/sun.awt=ALL-UNNAMED --add-opens=java.desktop/sun.java2d=ALL-UNNAMED --add-exports=java.desktop/sun.awt=ALL-UNNAMED"
+
+        }
+    ]
+}

@@ -1,12 +1,25 @@
 import java.awt.*;
+
+import org.jogamp.java3d.Canvas3D;
 import javax.swing.*;
+
+import org.jogamp.java3d.utils.universe.SimpleUniverse;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         // Test Print Line for Java
         System.out.println("TestPrint Line for Java");
 
-        JFrame frame = new JFrame("Physics Sim");
+        JFrame frame = new JFrame("Physics Sim");  
+        
+        GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();     
+        Canvas3D canvas = new Canvas3D(config);
+        canvas.enableInputMethods(true);
+        SimpleUniverse universe = new SimpleUniverse(canvas);
+        Renderer render = new Renderer();
+
+        frame.add(canvas);
+
         JMenuBar menuBar = new JMenuBar(); 
         JMenu aboutMenu = new JMenu("About");
         JMenu blockMenu = new JMenu("Blocks");
@@ -54,14 +67,22 @@ public class Main {
 
         frame.setIconImage(icon);
 
+        
+        universe.addBranchGraph(render.render(canvas));
+
+        universe.getViewingPlatform().setNominalViewingTransform();
+
 
         // Setting the frame to visible :shock:
         frame.setVisible(true);
+
+        canvas.requestFocus();
 
         // https://bionic.wowzatm.me/bionic.png
 
         frame.getContentPane().setForeground(Color.WHITE);
         
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
     }
 }
