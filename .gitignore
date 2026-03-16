@@ -4,7 +4,7 @@
 *.class
 
 # Ignores VsCode settings to prevent projects other users computers from being affected.
-settings.json
+.vscode/settings.json
 
 # Ignores build output directories
 out/
