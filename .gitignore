@@ -1,4 +1,12 @@
+# Beatiful GitIgnore file for Java projects
+
+# Ignores compiled class files
 *.class
+
+# Ignores VsCode settings to prevent projects other users computers from being affected.
+.vscode/settings.json
+
+# Ignores build output directories
 out/
 bin/
 target/
