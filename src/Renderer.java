@@ -18,6 +18,8 @@ import org.jogamp.vecmath.Color3f;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3f;
 
+import Constants.CubeConstants;
+
 public class Renderer {
 
     BranchGroup root;
@@ -25,6 +27,7 @@ public class Renderer {
     PickTranslateBehavior pickMove;
     /**
      * renders the objects that are going to be used in the physics sim.
+     * @param canvas the drawing field of the window.
      * @return the branchgroup that holds all of the objects.
      */
     public BranchGroup render(Canvas3D canvas){
@@ -125,7 +128,10 @@ public class Renderer {
      * @return the cube object
      */
     public Box cubeGenerate(Appearance appearance){
-        Box cube = new Box(0.09f, 0.09f, 0.09f,
+        Box cube = new Box(
+            CubeConstants.DIMESIONS.x,
+            CubeConstants.DIMESIONS.y,
+            CubeConstants.DIMESIONS.z,
             Box.GENERATE_NORMALS | 
             Box.GEOMETRY_NOT_SHARED | 
             Box.ENABLE_GEOMETRY_PICKING, 
@@ -153,3 +159,5 @@ public class Renderer {
     }
     
 }
+
+
