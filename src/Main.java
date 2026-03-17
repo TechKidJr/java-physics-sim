@@ -10,7 +10,14 @@ public class Main {
         // Test Print Line for Java
         System.out.println("TestPrint Line for Java");
 
-        JFrame frame = new JFrame("Physics Sim");  
+        
+        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
+        ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
+
+        System.setProperty("sun.awt.noerasebackground", "true");
+
+        JFrame frame = new JFrame("Physics Sim"); 
+        
         
         GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();     
         Canvas3D canvas = new Canvas3D(config);
