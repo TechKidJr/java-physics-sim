@@ -23,27 +23,33 @@ public class Main {
         JMenuBar menuBar = new JMenuBar(); 
         JMenu aboutMenu = new JMenu("About");
         JMenu blockMenu = new JMenu("Blocks");
+        JMenu configMenu = new JMenu("Configs");
         JMenuItem infoItem = new JMenuItem("Info");
         JMenuItem cubeItem = new JMenuItem("Cube");
         JMenuItem sphereItem = new JMenuItem("Sphere");
+        JMenuItem gravityItem = new JMenuItem("Gravity");
 
         // Set the font of the menus to Comfortaa, size 10.
         aboutMenu.setFont(new Font("Comfortaa", Font.PLAIN,10));
         blockMenu.setFont(new Font("Comfortaa", Font.PLAIN, 10));
+        configMenu.setFont(new Font("Confortaa", Font.PLAIN, 10));
         
         // Set the font of the menu items to Comfortaa, size 10.
         infoItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
         cubeItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
         sphereItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
+        gravityItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
 
         // Add items to their respective menus.
         aboutMenu.add(infoItem);
         blockMenu.add(cubeItem);
         blockMenu.add(sphereItem);
+        configMenu.add(gravityItem);
         
         // Add the menu to the menu bar!
         menuBar.add(aboutMenu);
         menuBar.add(blockMenu);
+        menuBar.add(configMenu);
         frame.setJMenuBar(menuBar);
 
         infoItem.addActionListener(e -> {
@@ -56,6 +62,10 @@ public class Main {
 
         sphereItem.addActionListener(e -> {
             JOptionPane.showMessageDialog(frame, "A sphere should spawn here, remove this once feature is implemented. (PLACEHOLDER)");
+        });
+
+        gravityItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "Settings to change gravity should be here (PLACEHOLDER)");
         });
         // Setting the size of the frame.
         frame.setSize(1920, 1080);
