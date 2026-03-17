@@ -28,6 +28,7 @@ public class Main {
         JMenuItem cubeItem = new JMenuItem("Cube");
         JMenuItem sphereItem = new JMenuItem("Sphere");
         JMenuItem gravityItem = new JMenuItem("Gravity");
+        JMenuItem airResistanceItem = new JMenuItem("Air Resistance");
 
         // Set the font of the menus to Comfortaa, size 10.
         aboutMenu.setFont(new Font("Comfortaa", Font.PLAIN,10));
@@ -39,12 +40,14 @@ public class Main {
         cubeItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
         sphereItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
         gravityItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
+        airResistanceItem.setFont(new Font("Comfortaa", Font.PLAIN, 10));
 
         // Add items to their respective menus.
         aboutMenu.add(infoItem);
         blockMenu.add(cubeItem);
         blockMenu.add(sphereItem);
         configMenu.add(gravityItem);
+        configMenu.add(airResistanceItem);
         
         // Add the menu to the menu bar!
         menuBar.add(aboutMenu);
@@ -67,6 +70,11 @@ public class Main {
         gravityItem.addActionListener(e -> {
             JOptionPane.showMessageDialog(frame, "Settings to change gravity should be here (PLACEHOLDER)");
         });
+
+        airResistanceItem.addActionListener(e -> {
+            JOptionPane.showMessageDialog(frame, "Settings to change air resistance should be here (PLACEHOLDER)");
+        });
+        
         // Setting the size of the frame.
         frame.setSize(1920, 1080);
 
