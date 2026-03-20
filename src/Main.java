@@ -67,11 +67,11 @@ public class Main {
         });
 
         cubeItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "A cube should spawn here, remove this once feature is implemented. (PLACEHOLDER)");
+            render.rootCubeGroupAdd();
         });
 
         sphereItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "A sphere should spawn here, remove this once feature is implemented. (PLACEHOLDER)");
+            render.rootSphereGroupAdd();
         });
 
         gravityItem.addActionListener(e -> {
