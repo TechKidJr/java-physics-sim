@@ -4,7 +4,6 @@ import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.java3d.utils.picking.behaviors.PickRotateBehavior;
 import org.jogamp.java3d.utils.picking.behaviors.PickTranslateBehavior;
 
-import javax.swing.JMenuItem;
 
 import org.jogamp.java3d.AmbientLight;
 import org.jogamp.java3d.Appearance;
