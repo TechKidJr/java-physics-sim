@@ -71,9 +71,6 @@ public class Renderer {
         transformSpheres.setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
         transformSpheres.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
 
-        //The 3d shapes and design for them
-        //TODO: Create multiple cubes and spheres by clicking on the cubes and spheres in the menu bar, probably using a method that creates them.
-
     
 
         Vector3f vectorCube = new Vector3f(-0.5f, 0, 0); //temp
@@ -124,7 +121,7 @@ public class Renderer {
     /**
      * Creates a new cube object for the render to use.
      * @param appearance sets the appearance of the cube.
-     * @return the cube object
+     * @return the Branchgroup which holds the transform group of the cube.
      */
     public BranchGroup cubeGenerate(Appearance appearance){
         BranchGroup bgC = new BranchGroup();
@@ -151,13 +148,18 @@ public class Renderer {
         tgC.addChild(cube);
         bgC.addChild(tgC);
         return bgC;
-}
+    }
 
-    
+    /**
+     * adds the cube branch group to the transform group
+     */
     public void rootCubeGroupAdd(){
         transformCubes.addChild(cubeGenerate(setAppearance()));
     }
 
+    /**
+     * Adds the sphere branch group to the transform group
+     */
     public void rootSphereGroupAdd(){
         transformSpheres.addChild(sphereGenerate(setAppearance()));
     }
