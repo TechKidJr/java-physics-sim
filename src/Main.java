@@ -1,9 +1,12 @@
 import java.awt.*;
+import java.sql.Time;
 
 import org.jogamp.java3d.Canvas3D;
 import javax.swing.*;
 
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
+
+import Constants.WorldConstants;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -24,6 +27,7 @@ public class Main {
         canvas.enableInputMethods(true);
         SimpleUniverse universe = new SimpleUniverse(canvas);
         Renderer render = new Renderer();
+        Physics physics = new Physics();
 
         frame.add(canvas);
 
@@ -97,9 +101,24 @@ public class Main {
 
         universe.getViewingPlatform().setNominalViewingTransform();
 
-
+        physics.init();
         // Setting the frame to visible :shock:
         frame.setVisible(true);
+
+        final long[] previousTime = {System.nanoTime()};
+
+        new Timer(16, e -> {
+            long[] currentTime = {System.nanoTime()};
+            float deltaTimeInSeconds = ((float)(currentTime[0] - previousTime[0]))/WorldConstants.NANO_IN_SECONDS;
+            if (deltaTimeInSeconds > 1f/6f){
+                deltaTimeInSeconds = 0.12f;
+                physics.update(deltaTimeInSeconds);
+            }
+            else {
+                physics.update(deltaTimeInSeconds);
+            }
+            previousTime[0] = currentTime[0];
+        }).start();
 
         canvas.requestFocus();
 

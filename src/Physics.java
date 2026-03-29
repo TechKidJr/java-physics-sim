@@ -1,13 +1,9 @@
-import java.lang.management.MonitorInfo;
+import java.sql.Time;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.*;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
-import com.bulletphysics.collision.broadphase.BroadphasePair;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
-import com.bulletphysics.collision.broadphase.Dispatcher;
-import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.shapes.BoxShape;
@@ -16,7 +12,6 @@ import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
-import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.MotionState;
@@ -26,9 +21,9 @@ import Constants.WorldConstants;
 
 
 public class Physics{
-    DiscreteDynamicsWorld dWorld;
+    private DiscreteDynamicsWorld dWorld;
 
-    public void physics(){
+    public void init(){
 
         // World configs
         DefaultCollisionConfiguration collisionConfig = new DefaultCollisionConfiguration();
@@ -44,22 +39,21 @@ public class Physics{
         // dWorld.setGravity(gravity);
 
         
-        StaticPlaneShape floor = new StaticPlaneShape(new Vector3f(0, -10, 0), 0);
-        StaticPlaneShape ceiling = new StaticPlaneShape(new Vector3f(0, 10, 0), 0);
-        CollisionShape leftWall = new BoxShape(new Vector3f(-10,0,0));
-        CollisionShape rightwall = new BoxShape(new Vector3f(10, 0, 0));
+        StaticPlaneShape floor = new StaticPlaneShape(new Vector3f(0, -1f, 0), 1.0f);
+        StaticPlaneShape ceiling = new StaticPlaneShape(new Vector3f(0, 1f, 0), -1.0f);
+        CollisionShape leftWall = new BoxShape(new Vector3f(0.1f,10f,10f));
+        CollisionShape rightwall = new BoxShape(new Vector3f(0.1f, 10f, 10f));
 
         //floor configs
         Transform floorTransform = new Transform();
         floorTransform.setIdentity();
-        floorTransform.origin.set(0, -1f, 0);
         MotionState fMotionState = new DefaultMotionState(floorTransform);
         RigidBodyConstructionInfo floorConfig = new RigidBodyConstructionInfo(0f, fMotionState, floor);
         RigidBody floorRigidBody = new RigidBody(floorConfig);
 
         //ceiling configs
         Transform ceilingTransform = new Transform();
-        ceilingTransform.origin.set(0, 1f, 0);
+        ceilingTransform.setIdentity();
         MotionState cMotionState = new DefaultMotionState(ceilingTransform);
         RigidBodyConstructionInfo ceilingInfo = new RigidBodyConstructionInfo(0f, cMotionState, ceiling, new Vector3f(0, 0, 0));
         RigidBody ceilingRigidBody = new RigidBody(ceilingInfo);
@@ -69,7 +63,7 @@ public class Physics{
         lWallTransform.setIdentity();
         lWallTransform.origin.set(-1f, 0, 0);
         MotionState lMotionState = new DefaultMotionState(lWallTransform);
-        RigidBodyConstructionInfo lWallConfigs = new RigidBodyConstructionInfo(0f, lMotionState, rightwall, new Vector3f(0, 0, 0));
+        RigidBodyConstructionInfo lWallConfigs = new RigidBodyConstructionInfo(0f, lMotionState, leftWall, new Vector3f(0, 0, 0));
         RigidBody leftWallBody = new RigidBody(lWallConfigs);
 
         //right wall configs
@@ -80,14 +74,17 @@ public class Physics{
         RigidBodyConstructionInfo rWallConfig = new RigidBodyConstructionInfo(0f, rMotionState, rightwall);
         RigidBody rightWallBody = new RigidBody(rWallConfig);
 
+        //Adding objects to the dynamics world
         dWorld.addRigidBody(floorRigidBody);
         dWorld.addRigidBody(ceilingRigidBody);
         dWorld.addRigidBody(leftWallBody);
-        dWorld.addRigidBody(rightWallBody);
-
-        
-        
-        
+        dWorld.addRigidBody(rightWallBody);        
     }
 
+    /**
+     * Updates the physics in the game loop.
+     */
+    public void update(float deltaTime){
+        dWorld.stepSimulation(deltaTime, WorldConstants.MAX_SUB_STEPS, WorldConstants.TIME_STEP);
+    }
 }
