@@ -1,9 +1,12 @@
 import java.awt.*;
+import java.sql.Time;
 
 import org.jogamp.java3d.Canvas3D;
 import javax.swing.*;
 
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
+
+import Constants.WorldConstants;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -24,6 +27,7 @@ public class Main {
         canvas.enableInputMethods(true);
         SimpleUniverse universe = new SimpleUniverse(canvas);
         Renderer render = new Renderer();
+        Physics physics = new Physics();
 
         frame.add(canvas);
 
@@ -86,7 +90,8 @@ public class Main {
         frame.setSize(1920, 1080);
 
         // Setting the bPaneackground color of the frame to Black (for now).
-        frame.getContentPane().setBackground(java.awt.Color.BLACK);
+        Color backColor = new Color(38, 43, 51);
+        frame.getContentPane().setBackground(backColor);
 
         Image icon = new ImageIcon(Main.class.getResource("/bionic.png")).getImage();
 
@@ -97,9 +102,11 @@ public class Main {
 
         universe.getViewingPlatform().setNominalViewingTransform();
 
-
+        physics.init();
         // Setting the frame to visible :shock:
         frame.setVisible(true);
+
+        physics.update();
 
         canvas.requestFocus();
 

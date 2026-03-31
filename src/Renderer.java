@@ -4,8 +4,6 @@ import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.java3d.utils.picking.behaviors.PickRotateBehavior;
 import org.jogamp.java3d.utils.picking.behaviors.PickTranslateBehavior;
 
-import javax.swing.JMenuItem;
-
 import org.jogamp.java3d.AmbientLight;
 import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.BoundingSphere;
@@ -43,7 +41,6 @@ public class Renderer {
         root.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
         root.setCapability(BranchGroup.ALLOW_DETACH);
 
-
         Point3d boundaryCenter = new Point3d(0, 0, 0.0);
         BoundingSphere bounds = new BoundingSphere(boundaryCenter, 1000d);
         
@@ -56,26 +53,11 @@ public class Renderer {
 
         //Transformations that affect the cubes
         transformCubes = new TransformGroup();
-        transformCubes.setTransform(new Transform3D());
-        transformCubes.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-        transformCubes.setCapability(TransformGroup.ALLOW_CHILDREN_EXTEND);
-        transformCubes.setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
-        transformCubes.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-        transformCubes.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+        objectTransformConfigs(transformCubes);
 
         //Transformations that affect the spheres.
         transformSpheres = new TransformGroup();
-        transformSpheres.setTransform(new Transform3D());
-        transformSpheres.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-        transformSpheres.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-        transformSpheres.setCapability(TransformGroup.ALLOW_CHILDREN_EXTEND);
-        transformSpheres.setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
-        transformSpheres.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
-
-        //The 3d shapes and design for them
-        //TODO: Create multiple cubes and spheres by clicking on the cubes and spheres in the menu bar, probably using a method that creates them.
-
-    
+        objectTransformConfigs(transformSpheres);
 
         Vector3f vectorCube = new Vector3f(-0.5f, 0, 0); //temp
         Transform3D rotate = new Transform3D();
@@ -85,7 +67,6 @@ public class Renderer {
         cubeTranslation.setTranslation(vectorCube);
         cubeTranslation.mul(rotate);
         transformCubes.setTransform(cubeTranslation);
-
 
         Vector3f vectorSphere = new Vector3f(0.5f, 0, 0); //temp
         Transform3D sphereTranslation = new Transform3D();
@@ -125,7 +106,7 @@ public class Renderer {
     /**
      * Creates a new cube object for the render to use.
      * @param appearance sets the appearance of the cube.
-     * @return the cube object
+     * @return the Branchgroup which holds the transform group of the cube.
      */
     public BranchGroup cubeGenerate(Appearance appearance){
         BranchGroup bgC = new BranchGroup();
@@ -152,13 +133,18 @@ public class Renderer {
         tgC.addChild(cube);
         bgC.addChild(tgC);
         return bgC;
-}
+    }
 
-    
+    /**
+     * adds the cube branch group to the transform group
+     */
     public void rootCubeGroupAdd(){
         transformCubes.addChild(cubeGenerate(setAppearance()));
     }
 
+    /**
+     * Adds the sphere branch group to the transform group
+     */
     public void rootSphereGroupAdd(){
         transformSpheres.addChild(sphereGenerate(setAppearance()));
     }
@@ -186,6 +172,15 @@ public class Renderer {
         tgS.addChild(sphere);
         bgS.addChild(tgS);
         return bgS;
+    }
+
+    private void objectTransformConfigs(TransformGroup transformGroup){
+        transformGroup.setTransform(new Transform3D());
+        transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+        transformGroup.setCapability(TransformGroup.ALLOW_CHILDREN_EXTEND);
+        transformGroup.setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
+        transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+        transformGroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
     }
 
     public Appearance setAppearance(){
