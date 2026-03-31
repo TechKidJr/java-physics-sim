@@ -90,7 +90,8 @@ public class Main {
         frame.setSize(1920, 1080);
 
         // Setting the bPaneackground color of the frame to Black (for now).
-        frame.getContentPane().setBackground(java.awt.Color.BLACK);
+        Color backColor = new Color(38, 43, 51);
+        frame.getContentPane().setBackground(backColor);
 
         Image icon = new ImageIcon(Main.class.getResource("/bionic.png")).getImage();
 
@@ -105,20 +106,7 @@ public class Main {
         // Setting the frame to visible :shock:
         frame.setVisible(true);
 
-        final long[] previousTime = {System.nanoTime()};
-
-        new Timer(16, e -> {
-            long[] currentTime = {System.nanoTime()};
-            float deltaTimeInSeconds = ((float)(currentTime[0] - previousTime[0]))/WorldConstants.NANO_IN_SECONDS;
-            if (deltaTimeInSeconds > 1f/6f){
-                deltaTimeInSeconds = 0.12f;
-                physics.update(deltaTimeInSeconds);
-            }
-            else {
-                physics.update(deltaTimeInSeconds);
-            }
-            previousTime[0] = currentTime[0];
-        }).start();
+        physics.update();
 
         canvas.requestFocus();
 

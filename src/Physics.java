@@ -1,5 +1,6 @@
 import java.sql.Time;
 
+import javax.swing.Timer;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
@@ -8,7 +9,7 @@ import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.StaticPlaneShape;
+import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
@@ -22,6 +23,10 @@ import Constants.WorldConstants;
 
 public class Physics{
     private DiscreteDynamicsWorld dWorld;
+    private CollisionShape floor;
+    private CollisionShape ceiling;
+    private CollisionShape leftWall;
+    private CollisionShape rightwall;
 
     public void init(){
 
@@ -39,14 +44,15 @@ public class Physics{
         // dWorld.setGravity(gravity);
 
         
-        StaticPlaneShape floor = new StaticPlaneShape(new Vector3f(0, -1f, 0), 1.0f);
-        StaticPlaneShape ceiling = new StaticPlaneShape(new Vector3f(0, 1f, 0), -1.0f);
-        CollisionShape leftWall = new BoxShape(new Vector3f(0.1f,10f,10f));
-        CollisionShape rightwall = new BoxShape(new Vector3f(0.1f, 10f, 10f));
+        floor = new BoxShape(new Vector3f(2f, 0.1f, 2f));
+        ceiling = new BoxShape(new Vector3f(2f, 0.1f,2f));
+        leftWall = new BoxShape(new Vector3f(0.1f,1f,2f));
+        rightwall = new BoxShape(new Vector3f(0.1f, 1f, 2f));
 
         //floor configs
         Transform floorTransform = new Transform();
         floorTransform.setIdentity();
+        floorTransform.origin.set(0, -1f, 0);
         MotionState fMotionState = new DefaultMotionState(floorTransform);
         RigidBodyConstructionInfo floorConfig = new RigidBodyConstructionInfo(0f, fMotionState, floor);
         RigidBody floorRigidBody = new RigidBody(floorConfig);
@@ -54,6 +60,7 @@ public class Physics{
         //ceiling configs
         Transform ceilingTransform = new Transform();
         ceilingTransform.setIdentity();
+        ceilingTransform.origin.set(0, 1f, 0);
         MotionState cMotionState = new DefaultMotionState(ceilingTransform);
         RigidBodyConstructionInfo ceilingInfo = new RigidBodyConstructionInfo(0f, cMotionState, ceiling, new Vector3f(0, 0, 0));
         RigidBody ceilingRigidBody = new RigidBody(ceilingInfo);
@@ -84,7 +91,52 @@ public class Physics{
     /**
      * Updates the physics in the game loop.
      */
-    public void update(float deltaTime){
-        dWorld.stepSimulation(deltaTime, WorldConstants.MAX_SUB_STEPS, WorldConstants.TIME_STEP);
+    public void update(){
+        final long[] previousTime = {System.nanoTime()};
+        new Timer(16, e -> {
+            long[] currentTime = {System.nanoTime()};
+            float deltaTimeInSeconds = ((float)(currentTime[0] - previousTime[0]))/WorldConstants.NANO_IN_SECONDS;
+            if (deltaTimeInSeconds > 1f/6f){
+                deltaTimeInSeconds = 0.12f;
+                dWorld.stepSimulation(deltaTimeInSeconds, WorldConstants.MAX_SUB_STEPS, WorldConstants.TIME_STEP);
+            }
+            else {
+                dWorld.stepSimulation(deltaTimeInSeconds, WorldConstants.MAX_SUB_STEPS, WorldConstants.TIME_STEP);
+            }
+            previousTime[0] = currentTime[0];
+        }).start();
+        
+    }
+
+    /**
+     * Gets the floor object
+     * @return the floor object
+     */
+    public CollisionShape getFloor(){
+        return floor;
+    }
+
+    /**
+     * Gets the ceiling object
+     * @return the ceiling object
+     */
+    public CollisionShape getCeiling(){
+        return ceiling;
+    }
+
+    /**
+     * Gets the left wall object
+     * @return the left wall
+     */
+    public CollisionShape getLeftWall(){
+        return leftWall;
+    }
+
+    /**
+     * Gets the right wall object
+     * @return the right wall
+     */
+    public CollisionShape getRightWall(){
+        return rightwall;
     }
 }
