@@ -4,6 +4,8 @@ import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.java3d.utils.picking.behaviors.PickRotateBehavior;
 import org.jogamp.java3d.utils.picking.behaviors.PickTranslateBehavior;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -26,8 +28,9 @@ import Constants.CubeConstants;
 public class Renderer {
 
     private BranchGroup root;
-    private TransformGroup transformCubes = new TransformGroup();
-    private TransformGroup transformSpheres = new TransformGroup();
+    private TransformGroup transformCubes;
+    private TransformGroup transformSpheres;
+    private List<Vector3f> objectSpawns;
     private PickRotateBehavior pickRotate;
     private PickTranslateBehavior pickMove;
     Appearance appearance;
@@ -54,7 +57,10 @@ public class Renderer {
         pickMove.setMode(PickTool.BOUNDS);
         pickRotate.setMode(PickTool.BOUNDS);
 
+        transformCubes = new TransformGroup();
         objectTransformConfigs(transformCubes);
+
+        transformSpheres = new TransformGroup();
         objectTransformConfigs(transformSpheres);
 
         Vector3f vectorSphere = new Vector3f(0.5f, 0, 0); //temp
@@ -62,6 +68,7 @@ public class Renderer {
         sphereTranslation.setTranslation(vectorSphere);
         transformSpheres.setTransform(sphereTranslation); 
 
+        objectSpawns = new ArrayList<>();
 
         //Lights
         //TODO: Adjust lighting color.
@@ -98,6 +105,7 @@ public class Renderer {
      * @return the Branchgroup which holds the transform group of the cube.
      */
     private BranchGroup cubeGenerate(Appearance appearance){
+        Vector3f spawn = randomSpawnPoint();
         BranchGroup bgC = new BranchGroup();
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
@@ -107,6 +115,15 @@ public class Renderer {
         tgC.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         tgC.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
         tgC.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+        Transform3D rotate = new Transform3D();
+        double rotX = randomCubeDegree()[0];
+        double rotY = randomCubeDegree()[1];
+        rotate.rotX(rotX); // rotates the cube by 45 degrees
+        rotate.rotY(rotY);
+        Transform3D cubeTranslation= new Transform3D();
+        cubeTranslation.setTranslation(spawn);
+        cubeTranslation.mul(rotate);
+        tgC.setTransform(cubeTranslation);
         Box cube = new Box(
             CubeConstants.DIMESIONS.x,
             CubeConstants.DIMESIONS.y,
@@ -121,6 +138,7 @@ public class Renderer {
         cube.setPickable(true);
         tgC.addChild(cube);
         bgC.addChild(tgC);
+        objectSpawns.add(spawn);
         return bgC;
     }
 
@@ -128,13 +146,6 @@ public class Renderer {
      * adds the cube branch group to the transform group
      */
     public void rootCubeGroupAdd(){
-        Transform3D rotate = new Transform3D();
-        rotate.rotX(randomCubeDegree()[0]); // rotates the cube by 45 degrees
-        rotate.rotY(randomCubeDegree()[1]);
-        Transform3D cubeTranslation= new Transform3D();
-        cubeTranslation.setTranslation(randomSpawnPoint());
-        cubeTranslation.mul(rotate);
-        transformCubes.setTransform(cubeTranslation);
         transformCubes.addChild(cubeGenerate(setAppearance()));
     }
 
@@ -171,17 +182,35 @@ public class Renderer {
     }
 
     public Vector3f randomSpawnPoint(){
+        int attempts = 0;
         Random random = new Random();
-        float xPos = random.nextFloat(50f, 950f);
-        float yPos = random.nextFloat(50f, 880f);
-        float[] position = {xPos, yPos, 0};
-        return new Vector3f(position);
+        Vector3f position = null;
+        boolean isClose = false;
+        do {
+            isClose = false;
+            float xPos = random.nextFloat(-0.73f, 0.55f);
+            float yPos = random.nextFloat(-0.35f, 0.4f);
+            position = new Vector3f(xPos, yPos, 0);
+
+            for (Vector3f objectSpawn:objectSpawns){
+                Vector3f distanceVector = new Vector3f();
+                distanceVector.sub(objectSpawn, position);
+                if (distanceVector.lengthSquared() <= 0.04f){
+                    attempts++;
+                    isClose = true;
+                    position = new Vector3f();
+                    break;
+                }
+            }
+        } while (isClose && attempts <= 100);
+
+        return isClose ? null : position;
     }
 
     public double[] randomCubeDegree() {
         Random random = new Random();
-        double xRot = random.nextDouble(0f, 180f);
-        double yRot = random.nextDouble(0f, 180f);
+        double xRot = random.nextDouble(45f, 135f);
+        double yRot = random.nextDouble(45f, 135f);
         double[] rotation = {xRot, yRot};
         return rotation;
     }
