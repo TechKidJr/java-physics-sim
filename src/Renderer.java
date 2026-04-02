@@ -4,6 +4,11 @@ import org.jogamp.java3d.utils.picking.PickTool;
 import org.jogamp.java3d.utils.picking.behaviors.PickRotateBehavior;
 import org.jogamp.java3d.utils.picking.behaviors.PickTranslateBehavior;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.stream.IntStream;
+
 import org.jogamp.java3d.AmbientLight;
 import org.jogamp.java3d.Appearance;
 import org.jogamp.java3d.BoundingSphere;
@@ -22,11 +27,12 @@ import Constants.CubeConstants;
 
 public class Renderer {
 
-    BranchGroup root;
-    TransformGroup transformCubes;
-    TransformGroup transformSpheres;
-    PickRotateBehavior pickRotate;
-    PickTranslateBehavior pickMove;
+    private BranchGroup root;
+    private TransformGroup transformCubes;
+    private TransformGroup transformSpheres;
+    private List<Vector3f> objectSpawns;
+    private PickRotateBehavior pickRotate;
+    private PickTranslateBehavior pickMove;
     Appearance appearance;
     /**
      * renders the objects that are going to be used in the physics sim.
@@ -51,28 +57,18 @@ public class Renderer {
         pickMove.setMode(PickTool.BOUNDS);
         pickRotate.setMode(PickTool.BOUNDS);
 
-        //Transformations that affect the cubes
         transformCubes = new TransformGroup();
         objectTransformConfigs(transformCubes);
 
-        //Transformations that affect the spheres.
         transformSpheres = new TransformGroup();
         objectTransformConfigs(transformSpheres);
-
-        Vector3f vectorCube = new Vector3f(-0.5f, 0, 0); //temp
-        Transform3D rotate = new Transform3D();
-        rotate.rotX(Math.PI/4.0); // rotates the cube by 45 degrees
-        rotate.rotY(Math.PI/4.0);
-        Transform3D cubeTranslation= new Transform3D();
-        cubeTranslation.setTranslation(vectorCube);
-        cubeTranslation.mul(rotate);
-        transformCubes.setTransform(cubeTranslation);
 
         Vector3f vectorSphere = new Vector3f(0.5f, 0, 0); //temp
         Transform3D sphereTranslation = new Transform3D();
         sphereTranslation.setTranslation(vectorSphere);
         transformSpheres.setTransform(sphereTranslation); 
 
+        objectSpawns = new ArrayList<>();
 
         //Lights
         //TODO: Adjust lighting color.
@@ -108,7 +104,8 @@ public class Renderer {
      * @param appearance sets the appearance of the cube.
      * @return the Branchgroup which holds the transform group of the cube.
      */
-    public BranchGroup cubeGenerate(Appearance appearance){
+    private BranchGroup cubeGenerate(Appearance appearance){
+        Vector3f spawn = randomSpawnPoint();
         BranchGroup bgC = new BranchGroup();
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
@@ -118,6 +115,15 @@ public class Renderer {
         tgC.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         tgC.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
         tgC.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+        Transform3D rotate = new Transform3D();
+        double rotX = randomCubeDegree()[0];
+        double rotY = randomCubeDegree()[1];
+        rotate.rotX(rotX); // rotates the cube by 45 degrees
+        rotate.rotY(rotY);
+        Transform3D cubeTranslation= new Transform3D();
+        cubeTranslation.setTranslation(spawn);
+        cubeTranslation.mul(rotate);
+        tgC.setTransform(cubeTranslation);
         Box cube = new Box(
             CubeConstants.DIMESIONS.x,
             CubeConstants.DIMESIONS.y,
@@ -132,6 +138,7 @@ public class Renderer {
         cube.setPickable(true);
         tgC.addChild(cube);
         bgC.addChild(tgC);
+        objectSpawns.add(spawn);
         return bgC;
     }
 
@@ -153,7 +160,7 @@ public class Renderer {
      * @param appearance sets the appearance of the sphere
      * @return the sphere object
      */
-    public BranchGroup sphereGenerate(Appearance appearance){
+    private BranchGroup sphereGenerate(Appearance appearance){
         BranchGroup bgS = new BranchGroup();
         bgS.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         bgS.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
@@ -174,6 +181,40 @@ public class Renderer {
         return bgS;
     }
 
+    public Vector3f randomSpawnPoint(){
+        int attempts = 0;
+        Random random = new Random();
+        Vector3f position = null;
+        boolean isClose = false;
+        do {
+            isClose = false;
+            float xPos = random.nextFloat(-0.73f, 0.55f);
+            float yPos = random.nextFloat(-0.35f, 0.4f);
+            position = new Vector3f(xPos, yPos, 0);
+
+            for (Vector3f objectSpawn:objectSpawns){
+                Vector3f distanceVector = new Vector3f();
+                distanceVector.sub(objectSpawn, position);
+                if (distanceVector.lengthSquared() <= 0.04f){
+                    attempts++;
+                    isClose = true;
+                    position = new Vector3f();
+                    break;
+                }
+            }
+        } while (isClose && attempts <= 100);
+
+        return isClose ? null : position;
+    }
+
+    public double[] randomCubeDegree() {
+        Random random = new Random();
+        double xRot = random.nextDouble(45f, 135f);
+        double yRot = random.nextDouble(45f, 135f);
+        double[] rotation = {xRot, yRot};
+        return rotation;
+    }
+
     private void objectTransformConfigs(TransformGroup transformGroup){
         transformGroup.setTransform(new Transform3D());
         transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
@@ -183,7 +224,7 @@ public class Renderer {
         transformGroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
     }
 
-    public Appearance setAppearance(){
+    private Appearance setAppearance(){
         Appearance appearance = new Appearance();
         Material material = new Material(new Color3f(0.2f, 0.02f, 0.02f), new Color3f(0f, 0f, 0f), new Color3f(0.7f, 0.1f, 0.1f), new Color3f(1.0f, 1.0f, 1.0f), 75f);
         material.setLightingEnable(true);
