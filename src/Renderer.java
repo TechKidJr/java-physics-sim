@@ -24,6 +24,7 @@ import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3f;
 
 import Constants.CubeConstants;
+import Constants.WorldConstants;
 
 public class Renderer {
 
@@ -63,11 +64,6 @@ public class Renderer {
         transformSpheres = new TransformGroup();
         objectTransformConfigs(transformSpheres);
 
-        Vector3f vectorSphere = new Vector3f(0.5f, 0, 0); //temp
-        Transform3D sphereTranslation = new Transform3D();
-        sphereTranslation.setTranslation(vectorSphere);
-        transformSpheres.setTransform(sphereTranslation); 
-
         objectSpawns = new ArrayList<>();
 
         //Lights
@@ -105,7 +101,6 @@ public class Renderer {
      * @return the Branchgroup which holds the transform group of the cube.
      */
     private BranchGroup cubeGenerate(Appearance appearance){
-        Vector3f spawn = randomSpawnPoint();
         BranchGroup bgC = new BranchGroup();
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
@@ -121,6 +116,7 @@ public class Renderer {
         rotate.rotX(rotX); // rotates the cube by 45 degrees
         rotate.rotY(rotY);
         Transform3D cubeTranslation= new Transform3D();
+        Vector3f spawn = randomSpawnPoint();
         cubeTranslation.setTranslation(spawn);
         cubeTranslation.mul(rotate);
         tgC.setTransform(cubeTranslation);
@@ -170,6 +166,10 @@ public class Renderer {
         tgS.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         tgS.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
         tgS.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+        Transform3D sphereTranslation = new Transform3D();
+        Vector3f spawn = randomSpawnPoint();
+        sphereTranslation.setTranslation(spawn);
+        tgS.setTransform(sphereTranslation); 
         Sphere sphere = new Sphere(0.09f, appearance); //temp the size can change to our liking.
         sphere.getShape(Sphere.BODY).setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);;
         sphere.setCapability(Sphere.ENABLE_GEOMETRY_PICKING);
@@ -178,6 +178,7 @@ public class Renderer {
         sphere.getShape(Sphere.BODY).setPickable(true);
         tgS.addChild(sphere);
         bgS.addChild(tgS);
+        objectSpawns.add(spawn);
         return bgS;
     }
 
@@ -195,7 +196,7 @@ public class Renderer {
             for (Vector3f objectSpawn:objectSpawns){
                 Vector3f distanceVector = new Vector3f();
                 distanceVector.sub(objectSpawn, position);
-                if (distanceVector.lengthSquared() <= 0.04f){
+                if (distanceVector.lengthSquared() <= WorldConstants.MIN_DISTANCE){
                     attempts++;
                     isClose = true;
                     position = new Vector3f();
