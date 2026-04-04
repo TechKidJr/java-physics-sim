@@ -19,7 +19,7 @@ public class WorldConstants {
     public static final float ANGLE_THRESHOLD = 1f; 
     public static final float MAX_ROTATION = 100f;
     public static final float STOP_TIME = 2.0f; 
-    public static final float MIN_DISTANCE = 0.045f;
+    public static final float MIN_DISTANCE = 0.05f;
 
     public static final float SLIDE_FRICTION = 0.5f; //temp 
     public static final float ROLLING_FRICTION = 0.1f; //temp

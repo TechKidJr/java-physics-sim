@@ -7,7 +7,6 @@ import org.jogamp.java3d.utils.picking.behaviors.PickTranslateBehavior;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 import org.jogamp.java3d.AmbientLight;
 import org.jogamp.java3d.Appearance;
@@ -20,8 +19,11 @@ import org.jogamp.java3d.Shape3D;
 import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
 import org.jogamp.vecmath.Color3f;
+import org.jogamp.vecmath.Matrix3f;
 import org.jogamp.vecmath.Point3d;
 import org.jogamp.vecmath.Vector3f;
+
+import com.bulletphysics.dynamics.RigidBody;
 
 import Constants.CubeConstants;
 import Constants.WorldConstants;
@@ -34,7 +36,8 @@ public class Renderer {
     private List<Vector3f> objectSpawns;
     private PickRotateBehavior pickRotate;
     private PickTranslateBehavior pickMove;
-    Appearance appearance;
+    private Physics physics;
+    private Appearance appearance;
     /**
      * renders the objects that are going to be used in the physics sim.
      * @param canvas the drawing field of the window.
@@ -47,6 +50,8 @@ public class Renderer {
         root.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         root.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
         root.setCapability(BranchGroup.ALLOW_DETACH);
+
+        physics = new Physics();
 
         Point3d boundaryCenter = new Point3d(0, 0, 0.0);
         BoundingSphere bounds = new BoundingSphere(boundaryCenter, 1000d);
@@ -115,8 +120,12 @@ public class Renderer {
         double rotY = randomCubeDegree()[1];
         rotate.rotX(rotX); // rotates the cube by 45 degrees
         rotate.rotY(rotY);
+        Matrix3f rM = new Matrix3f();
+        rotate.get(rM);
+        float[] rotateArray = new float[]{rM.m00, rM.m01, rM.m02, rM.m10, rM.m11, rM.m12, rM.m20, rM.m21, rM.m22};
         Transform3D cubeTranslation= new Transform3D();
         Vector3f spawn = randomSpawnPoint();
+        float[] rigidSpawn = new float[]{spawn.x, spawn.y, spawn.z};
         cubeTranslation.setTranslation(spawn);
         cubeTranslation.mul(rotate);
         tgC.setTransform(cubeTranslation);
@@ -129,10 +138,12 @@ public class Renderer {
             Box.ENABLE_GEOMETRY_PICKING, 
             appearance
         ); //temp the size can change to our liking
+        RigidBody boxRigidBody = physics.createRigidBox(rigidSpawn, rotateArray);
         cube.setCapability(Shape3D.ALLOW_PICKABLE_READ);
         cube.setCapability(Shape3D.ALLOW_PICKABLE_WRITE);
         cube.setPickable(true);
         tgC.addChild(cube);
+        tgC.setUserData(boxRigidBody);
         bgC.addChild(tgC);
         objectSpawns.add(spawn);
         return bgC;
@@ -168,6 +179,7 @@ public class Renderer {
         tgS.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
         Transform3D sphereTranslation = new Transform3D();
         Vector3f spawn = randomSpawnPoint();
+        float[] spawnBody = {spawn.x, spawn.y, spawn.z};
         sphereTranslation.setTranslation(spawn);
         tgS.setTransform(sphereTranslation); 
         Sphere sphere = new Sphere(0.09f, appearance); //temp the size can change to our liking.
@@ -176,7 +188,9 @@ public class Renderer {
         sphere.setCapability(Shape3D.ALLOW_PICKABLE_READ);
         sphere.setCapability(Shape3D.ALLOW_PICKABLE_WRITE);
         sphere.getShape(Sphere.BODY).setPickable(true);
+        RigidBody sphereRigidBody = physics.createRigidSphere(spawnBody);
         tgS.addChild(sphere);
+        tgS.setUserData(sphereRigidBody);
         bgS.addChild(tgS);
         objectSpawns.add(spawn);
         return bgS;
