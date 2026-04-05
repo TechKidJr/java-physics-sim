@@ -25,7 +25,7 @@ public class Main {
         canvas.enableInputMethods(true);
         SimpleUniverse universe = new SimpleUniverse(canvas);
         Renderer render = new Renderer();
-        Physics physics = new Physics();
+        Physics physics = new Physics(render);
 
         frame.add(canvas);
 
@@ -96,7 +96,7 @@ public class Main {
         frame.setIconImage(icon);
 
         
-        universe.addBranchGraph(render.render(canvas));
+        universe.addBranchGraph(render.render(canvas, physics));
 
         universe.getViewingPlatform().setNominalViewingTransform();
 

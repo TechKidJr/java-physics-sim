@@ -34,6 +34,7 @@ public class Renderer {
     private TransformGroup transformCubes;
     private TransformGroup transformSpheres;
     private List<Vector3f> objectSpawns;
+    private List<PhysicsShape> objects;
     private PickRotateBehavior pickRotate;
     private PickTranslateBehavior pickMove;
     private Physics physics;
@@ -43,7 +44,7 @@ public class Renderer {
      * @param canvas the drawing field of the window.
      * @return the branchgroup that holds all of the objects.
      */
-    public BranchGroup render(Canvas3D canvas){
+    public BranchGroup render(Canvas3D canvas, Physics physics){
 
         root = new BranchGroup();
         root.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
@@ -51,7 +52,7 @@ public class Renderer {
         root.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
         root.setCapability(BranchGroup.ALLOW_DETACH);
 
-        physics = new Physics();
+        this.physics = physics;
 
         Point3d boundaryCenter = new Point3d(0, 0, 0.0);
         BoundingSphere bounds = new BoundingSphere(boundaryCenter, 1000d);
@@ -68,7 +69,7 @@ public class Renderer {
 
         transformSpheres = new TransformGroup();
         objectTransformConfigs(transformSpheres);
-
+        objects = new ArrayList<>();
         objectSpawns = new ArrayList<>();
 
         //Lights
@@ -146,6 +147,8 @@ public class Renderer {
         tgC.setUserData(boxRigidBody);
         bgC.addChild(tgC);
         objectSpawns.add(spawn);
+        PhysicsShape shape = new PhysicsShape(tgC, boxRigidBody);
+        objects.add(shape);
         return bgC;
     }
 
@@ -196,6 +199,7 @@ public class Renderer {
         return bgS;
     }
 
+    //TODO: This is a mock test method until @TechKidJr figures out a way to spawn objects using the mouse (DELETE MESSAGE ONCE DONE)
     public Vector3f randomSpawnPoint(){
         int attempts = 0;
         Random random = new Random();
@@ -239,8 +243,14 @@ public class Renderer {
         transformGroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
     }
 
+    public void updatePositions(){
+        for (PhysicsShape object:objects){
+            object.setPosition();
+        }
+    }
+
     private Appearance setAppearance(){
-        Appearance appearance = new Appearance();
+        appearance = new Appearance();
         Material material = new Material(new Color3f(0.2f, 0.02f, 0.02f), new Color3f(0f, 0f, 0f), new Color3f(0.7f, 0.1f, 0.1f), new Color3f(1.0f, 1.0f, 1.0f), 75f);
         material.setLightingEnable(true);
         appearance.setMaterial(material);
