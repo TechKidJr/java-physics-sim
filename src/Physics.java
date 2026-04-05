@@ -1,15 +1,12 @@
-import java.sql.Time;
-
 import javax.swing.Timer;
 import javax.vecmath.Vector3f;
-
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
@@ -17,7 +14,6 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.MotionState;
 import com.bulletphysics.linearmath.Transform;
-
 import Constants.WorldConstants;
 
 
@@ -28,7 +24,7 @@ public class Physics{
     private CollisionShape leftWall;
     private CollisionShape rightwall;
 
-    public void init(){
+    public Physics(){
 
         // World configs
         DefaultCollisionConfiguration collisionConfig = new DefaultCollisionConfiguration();
@@ -106,6 +102,34 @@ public class Physics{
             previousTime[0] = currentTime[0];
         }).start();
         
+    }
+
+    public RigidBody createRigidBox(float[] spawn, float[] rotationMatrix){
+        CollisionShape boxShape = new BoxShape(new Vector3f(0.09f, 0.09f, 0.09f));
+        Transform boxTransform = new Transform();
+        boxTransform.setIdentity();
+        boxTransform.origin.set(new Vector3f(spawn));
+        boxTransform.basis.set(rotationMatrix);
+        MotionState boxState = new DefaultMotionState(boxTransform);
+        Vector3f localInertia = new Vector3f(0.0054f, 0.0054f, 0.0054f); //Inertia of each dimension of a cube is calculated by I = 1/3*Mass*dimension^2
+        RigidBodyConstructionInfo boxConfig = new RigidBodyConstructionInfo(1f, boxState, boxShape, localInertia);
+        RigidBody boxRigidBody = new RigidBody(boxConfig);
+        dWorld.addRigidBody(boxRigidBody);
+        return boxRigidBody;
+    }
+
+    public RigidBody createRigidSphere(float[] spawn){
+        CollisionShape sphereShape = new SphereShape(0.09f);
+        Transform sphereTransform = new Transform();
+        sphereTransform.setIdentity();
+        sphereTransform.origin.set(new Vector3f(spawn));
+        MotionState sphereState = new DefaultMotionState(sphereTransform);
+        Vector3f localInertia = new Vector3f(0.00324f, 0.00324f, 0.00324f);
+        RigidBodyConstructionInfo sphereConfig = new RigidBodyConstructionInfo(1, sphereState, sphereShape, localInertia);
+        RigidBody sphereRigidBody = new RigidBody(sphereConfig);
+        dWorld.addRigidBody(sphereRigidBody);
+        return sphereRigidBody;
+
     }
 
     /**
