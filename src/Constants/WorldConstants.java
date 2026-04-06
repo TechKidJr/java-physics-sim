@@ -11,7 +11,7 @@ public class WorldConstants {
 
     // Air Resistance
     //TODO: Be able to change the Air Resistance from the window.
-    public static final float LINEAR_AIR_RESISTANCE = 0.2f; //temp
+    public static final float LINEAR_AIR_RESISTANCE = 0.3f; //temp
     public static final float ROTATIONAL_AIR_RESISTANCE = 0.3f; //temp
 
     // Minimum and Maximum allowed movement of the objects.
@@ -22,8 +22,8 @@ public class WorldConstants {
     public static final float MIN_DISTANCE = 0.05f;
 
     public static final float SLIDE_FRICTION = 0.5f; //temp 
-    public static final float ROLLING_FRICTION = 0.1f; //temp
-    public static final float BOUNCINESS = 0.35f; //temp
+    public static final float ROLLING_FRICTION = 0.2f; //temp
+    public static final float Restitution = 0.35f; //temp
 
     public static final float COLLISION_TOLERANCE = 0.04f; //temp
     public static final float BREAKING_THRESHOLD = 0.02f; //temp

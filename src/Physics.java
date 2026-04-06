@@ -27,6 +27,8 @@ public class Physics{
 
     public Physics(Renderer render){
 
+        this.render = render;
+
         // World configs
         DefaultCollisionConfiguration collisionConfig = new DefaultCollisionConfiguration();
         CollisionDispatcher dispatch = new CollisionDispatcher(collisionConfig);
@@ -40,7 +42,6 @@ public class Physics{
         Vector3f gravity = new Vector3f(0f, WorldConstants.G_FORCE, 0f);
         dWorld.setGravity(gravity);
 
-        this.render = render;
         
         floor = new BoxShape(new Vector3f(2f, 0.1f, 2f));
         ceiling = new BoxShape(new Vector3f(2f, 0.1f,2f));
@@ -108,6 +109,12 @@ public class Physics{
         
     }
 
+    /**
+     * Creates a collision shape first, then attaches that to a rigid body.
+     * @param spawn the point the rigid body spawns at.
+     * @param rotationMatrix How it is rotated when it spawns in.
+     * @return the rigid body
+     */
     public RigidBody createRigidBox(float[] spawn, float[] rotationMatrix){
         CollisionShape boxShape = new BoxShape(new Vector3f(0.09f, 0.09f, 0.09f));
         boxShape.setMargin(0.04f);
@@ -116,19 +123,25 @@ public class Physics{
         boxTransform.origin.set(new Vector3f(spawn));
         boxTransform.basis.set(rotationMatrix);
         MotionState boxState = new DefaultMotionState(boxTransform);
-        Vector3f localInertia = new Vector3f(0.0054f, 0.0054f, 0.0054f); //Inertia of each dimension of a cube is calculated by I = 1/3*Mass*dimension^2
+        Vector3f localInertia = new Vector3f(0.0054f, 0.0054f, 0.0054f); //Inertia of each dimension of a cube is calculated by I = 1/3*Mass*dimension^2\
         RigidBodyConstructionInfo boxConfig = new RigidBodyConstructionInfo(1f, boxState, boxShape, localInertia);
         RigidBody boxRigidBody = new RigidBody(boxConfig);
         boxRigidBody.setDamping(WorldConstants.LINEAR_AIR_RESISTANCE, WorldConstants.ROTATIONAL_AIR_RESISTANCE);
         boxRigidBody.setFriction(WorldConstants.SLIDE_FRICTION);
-        boxRigidBody.setRestitution(WorldConstants.BOUNCINESS);
+        boxRigidBody.setRestitution(WorldConstants.Restitution);
         boxRigidBody.activate();
         dWorld.addRigidBody(boxRigidBody);
         return boxRigidBody;
     }
 
+    /**
+     * Creates a collision shape for the sphere first, then attaches that to a rigid body.
+     * @param spawn the point the rigid body spawns at.
+     * @return the rigid body.
+     */ 
     public RigidBody createRigidSphere(float[] spawn){
         CollisionShape sphereShape = new SphereShape(0.09f);
+        sphereShape.setMargin(0.04f);
         Transform sphereTransform = new Transform();
         sphereTransform.setIdentity();
         sphereTransform.origin.set(new Vector3f(spawn));
@@ -136,6 +149,9 @@ public class Physics{
         Vector3f localInertia = new Vector3f(0.00324f, 0.00324f, 0.00324f);
         RigidBodyConstructionInfo sphereConfig = new RigidBodyConstructionInfo(1, sphereState, sphereShape, localInertia);
         RigidBody sphereRigidBody = new RigidBody(sphereConfig);
+        sphereRigidBody.setDamping(WorldConstants.LINEAR_AIR_RESISTANCE, WorldConstants.ROTATIONAL_AIR_RESISTANCE);
+        sphereRigidBody.setFriction(WorldConstants.ROLLING_FRICTION);
+        sphereRigidBody.setRestitution(WorldConstants.Restitution);
         sphereRigidBody.activate();
         dWorld.addRigidBody(sphereRigidBody);
         return sphereRigidBody;
