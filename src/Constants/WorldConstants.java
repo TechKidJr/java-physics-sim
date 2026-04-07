@@ -6,13 +6,13 @@ public class WorldConstants {
     // Simulation Constants
     //TODO: Be able to change the G_Force from the window.
     public static final float G_FORCE = -9.81f;
-    public static final float TIME_STEP = 1f/60f; //temp
+    public static final float TIME_STEP = 1f/120f; //temp
     public static final int MAX_SUB_STEPS = 7; // temp
 
     // Air Resistance
     //TODO: Be able to change the Air Resistance from the window.
-    public static final float MOVING_AIR_RESISTANCE = 0.2f; //temp
-    public static final float ROTATIONAL_AIR_RESISTANCE = 0.07f; //temp
+    public static final float LINEAR_AIR_RESISTANCE = 0.3f; //temp
+    public static final float ROTATIONAL_AIR_RESISTANCE = 0.3f; //temp
 
     // Minimum and Maximum allowed movement of the objects.
     public static final float MIN_VELOCITY = 0.8f;
@@ -22,8 +22,8 @@ public class WorldConstants {
     public static final float MIN_DISTANCE = 0.05f;
 
     public static final float SLIDE_FRICTION = 0.5f; //temp 
-    public static final float ROLLING_FRICTION = 0.1f; //temp
-    public static final float BOUNCINESS = 0.5f; //temp
+    public static final float ROLLING_FRICTION = 0.2f; //temp
+    public static final float Restitution = 0.35f; //temp
 
     public static final float COLLISION_TOLERANCE = 0.04f; //temp
     public static final float BREAKING_THRESHOLD = 0.02f; //temp

@@ -34,6 +34,7 @@ public class Renderer {
     private TransformGroup transformCubes;
     private TransformGroup transformSpheres;
     private List<Vector3f> objectSpawns;
+    private List<PhysicsShape> objects;
     private PickRotateBehavior pickRotate;
     private PickTranslateBehavior pickMove;
     private Physics physics;
@@ -43,15 +44,15 @@ public class Renderer {
      * @param canvas the drawing field of the window.
      * @return the branchgroup that holds all of the objects.
      */
-    public BranchGroup render(Canvas3D canvas){
+    public BranchGroup render(Canvas3D canvas, Physics physics){
+
+        this.physics = physics;
 
         root = new BranchGroup();
         root.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
         root.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         root.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
         root.setCapability(BranchGroup.ALLOW_DETACH);
-
-        physics = new Physics();
 
         Point3d boundaryCenter = new Point3d(0, 0, 0.0);
         BoundingSphere bounds = new BoundingSphere(boundaryCenter, 1000d);
@@ -68,7 +69,7 @@ public class Renderer {
 
         transformSpheres = new TransformGroup();
         objectTransformConfigs(transformSpheres);
-
+        objects = new ArrayList<>();
         objectSpawns = new ArrayList<>();
 
         //Lights
@@ -110,11 +111,13 @@ public class Renderer {
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
         bgC.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+
         TransformGroup tgC = new TransformGroup();
         tgC.setTransform(new Transform3D());
         tgC.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         tgC.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
         tgC.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+
         Transform3D rotate = new Transform3D();
         double rotX = randomCubeDegree()[0];
         double rotY = randomCubeDegree()[1];
@@ -129,6 +132,7 @@ public class Renderer {
         cubeTranslation.setTranslation(spawn);
         cubeTranslation.mul(rotate);
         tgC.setTransform(cubeTranslation);
+        
         Box cube = new Box(
             CubeConstants.DIMESIONS.x,
             CubeConstants.DIMESIONS.y,
@@ -142,10 +146,13 @@ public class Renderer {
         cube.setCapability(Shape3D.ALLOW_PICKABLE_READ);
         cube.setCapability(Shape3D.ALLOW_PICKABLE_WRITE);
         cube.setPickable(true);
+        
         tgC.addChild(cube);
         tgC.setUserData(boxRigidBody);
         bgC.addChild(tgC);
         objectSpawns.add(spawn);
+        PhysicsShape shape = new PhysicsShape(tgC, boxRigidBody);
+        objects.add(shape);
         return bgC;
     }
 
@@ -172,30 +179,41 @@ public class Renderer {
         bgS.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
         bgS.setCapability(BranchGroup.ALLOW_CHILDREN_READ);
         bgS.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+
         TransformGroup tgS = new TransformGroup();
         tgS.setTransform(new Transform3D());
         tgS.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         tgS.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
         tgS.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
+
         Transform3D sphereTranslation = new Transform3D();
         Vector3f spawn = randomSpawnPoint();
         float[] spawnBody = {spawn.x, spawn.y, spawn.z};
         sphereTranslation.setTranslation(spawn);
         tgS.setTransform(sphereTranslation); 
+
         Sphere sphere = new Sphere(0.09f, appearance); //temp the size can change to our liking.
         sphere.getShape(Sphere.BODY).setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);;
         sphere.setCapability(Sphere.ENABLE_GEOMETRY_PICKING);
         sphere.setCapability(Shape3D.ALLOW_PICKABLE_READ);
         sphere.setCapability(Shape3D.ALLOW_PICKABLE_WRITE);
         sphere.getShape(Sphere.BODY).setPickable(true);
+
         RigidBody sphereRigidBody = physics.createRigidSphere(spawnBody);
         tgS.addChild(sphere);
         tgS.setUserData(sphereRigidBody);
         bgS.addChild(tgS);
         objectSpawns.add(spawn);
+        PhysicsShape shape = new PhysicsShape(tgS, sphereRigidBody);
+        objects.add(shape);
         return bgS;
     }
 
+    //TODO: This is a mock test method until @TechKidJr figures out a way to spawn objects using the mouse (DELETE MESSAGE ONCE DONE)
+    /**
+     * Randomly generates a point for the cube to spawn at.
+     * @return the spawning Vector3f
+     */
     public Vector3f randomSpawnPoint(){
         int attempts = 0;
         Random random = new Random();
@@ -204,7 +222,7 @@ public class Renderer {
         do {
             isClose = false;
             float xPos = random.nextFloat(-0.73f, 0.55f);
-            float yPos = random.nextFloat(-0.35f, 0.4f);
+            float yPos = random.nextFloat(-0.25f, 0.43f);
             position = new Vector3f(xPos, yPos, 0);
 
             for (Vector3f objectSpawn:objectSpawns){
@@ -222,6 +240,10 @@ public class Renderer {
         return isClose ? null : position;
     }
 
+    /**
+     * Randomly generates a degree for the cube.
+     * @return the double[] for the rotation
+     */
     public double[] randomCubeDegree() {
         Random random = new Random();
         double xRot = random.nextDouble(45f, 135f);
@@ -239,8 +261,21 @@ public class Renderer {
         transformGroup.setCapability(TransformGroup.ENABLE_PICK_REPORTING);
     }
 
+    /**
+     * Cycles through the objects on the screen and updates their position based on where there rigid body is.
+     */
+    public void updatePositions(){
+        for (PhysicsShape object:objects){
+            object.setPosition();
+        }
+    }
+
+    /**
+     * Sets the appearance
+     * @return the appearance object.
+     */
     private Appearance setAppearance(){
-        Appearance appearance = new Appearance();
+        appearance = new Appearance();
         Material material = new Material(new Color3f(0.2f, 0.02f, 0.02f), new Color3f(0f, 0f, 0f), new Color3f(0.7f, 0.1f, 0.1f), new Color3f(1.0f, 1.0f, 1.0f), 75f);
         material.setLightingEnable(true);
         appearance.setMaterial(material);
