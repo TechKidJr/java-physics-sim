@@ -9,8 +9,28 @@ import org.jogamp.java3d.utils.universe.SimpleUniverse;
 public class Main {
     public static void main(String[] args) throws Exception {
         // Test Print Line for Java
-        System.out.println("TestPrint Line for Java");
+        // Deprecated, only uncomment for testing purposes.
+        // System.out.println("TestPrint Line for Java");
 
+        // TODO: Either move this to the bottom of the main method so it renders after the window is loaded.
+        // TODO: Make the ui look better, refer to Java Documentation for Swing for more info on how to do this.
+
+        // The null tells Java that the parent component of the dialog is not specified, so it will be centered on the screen.
+        // Checks if the user clicks yes first, then asks if they want a tutorial. If they click no, it skips the tutorial. If they click yes, it shows the tutorial. If they click no on the first dialog, it skips both dialogs.
+        // TODO: Make this less janky, I will make the if statements better later, this is fine for now.
+        if (JOptionPane.showConfirmDialog(null, "Welcome! This is a physics sim created by Advaith and Kidanny, published by Bionic. Is this your first time using this application?", "Welcome to PhySim!", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            System.out.println("User Clicked Yes"); // Debugging purposes, can be removed later.
+            if (JOptionPane.showConfirmDialog(null, "Would you like to see a tutorial on how to use the application?", "Tutorial", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                JOptionPane.showMessageDialog(null, "Welcome to PhySim! \n We are so glad you are trying this out! We are working hard to finish this project. \n Click OK to continue to the tutorial!", "Tutorial (0/4)", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "This is the main interface of the application. In the top left you will see the 'Blocks' menu, inside you can spawn a Cube and Sphere! You can click on the desired shape to spawn it in and move it around!", "Tutorial (1/4)", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "In the top right you will see the 'Configs' menu, inside you can change the gravity and air resistance settings! Click on the desired setting to change it! \n (Work in Progress, features may be limited or unavailable, check GitHub for updated versions.)", "Tutorial (2/4)", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "In the top left you will see the 'About' menu, inside you can click on 'Info' to see a small window with info about the project, such as the version and the creators of the project!", "Tutorial (3/4)", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "We hope you enjoy using this application! If you have any feedback or spot issues please open an issue on GitHub! \n This project is a work in progress and things may change.", "Tutorial (4/4)", JOptionPane.INFORMATION_MESSAGE);
+            }
+            else {
+                System.out.println("User Clicked No"); // Debugging purposes, can be removed later.
+            }
+    }
         
         JPopupMenu.setDefaultLightWeightPopupEnabled(false);
         ToolTipManager.sharedInstance().setLightWeightPopupEnabled(false);
