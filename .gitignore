@@ -3,6 +3,9 @@
 # Ignores compiled class files
 *.class
 
+# Ignores .json files because why not and it saves space :D.
+/src/*.json
+
 # Ignores VsCode settings to prevent projects other users computers from being affected.
 .vscode/settings.json
 
