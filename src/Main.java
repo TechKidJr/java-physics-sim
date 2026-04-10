@@ -158,7 +158,7 @@ public class Main {
         configSettings.put("hasOpenedBefore", true);
 
         // Version 0.0.2 because this will be in the next update.
-        configSettings.put("version", "0.0.2 APLHA");
+        configSettings.put("version", "0.0.2 ALPHA");
 
         try {
             // Writing the data to a .json file called "config.json" in the src folder.
