@@ -2,6 +2,7 @@ import java.awt.*;
 
 import org.jogamp.java3d.Canvas3D;
 import javax.swing.*;
+import javax.vecmath.Vector3f;
 
 import org.jogamp.java3d.utils.universe.SimpleUniverse;
 
@@ -97,11 +98,29 @@ public class Main {
         });
 
         gravityItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "Settings to change gravity should be here (PLACEHOLDER)");
+            String value = JOptionPane.showInputDialog(null,"What do you want the gravity to be set to:  ", "-9.81");
+            if (value != null){
+                try {
+                    float downForce = Float.parseFloat(value);
+                    physics.usrCtrledGravity(downForce);
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Invalid number format. Please enter a number.", "TRY AGAIN", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         });
 
         airResistanceItem.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, "Settings to change air resistance should be here (PLACEHOLDER)");
+            String value = JOptionPane.showInputDialog(null, "What do you want the air resistance to be set to: ", "0.3");
+            if (value != null){
+                try {
+                    float resistance = Float.parseFloat(value);
+                    physics.usrCtrledAirResistance(resistance);
+                    
+                } catch (NumberFormatException ex){
+                    JOptionPane.showMessageDialog(null, "Invalid number format. Please enter a number", "TRY AGAIN", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         });
         
         // Setting the size of the frame.

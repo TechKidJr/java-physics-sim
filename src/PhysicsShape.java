@@ -3,6 +3,8 @@ import org.jogamp.java3d.Transform3D;
 import org.jogamp.java3d.TransformGroup;
 import org.jogamp.vecmath.Vector3f;
 import org.jogamp.vecmath.Quat4f;
+
+import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.Transform;
 
@@ -46,4 +48,9 @@ public class PhysicsShape {
         transform3d.setRotation(rotation);
         transformGroup.setTransform(transform3d);
     }
+
+    public RigidBody getRigidBody(){
+        return objectRigidBody;
+    }
+
 }

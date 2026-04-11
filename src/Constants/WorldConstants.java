@@ -9,8 +9,7 @@ public class WorldConstants {
     public static final float TIME_STEP = 1f/120f; //temp
     public static final int MAX_SUB_STEPS = 7; // temp
 
-    // Air Resistance
-    //TODO: Be able to change the Air Resistance from the window.
+    // Initial Air Resistance
     public static final float LINEAR_AIR_RESISTANCE = 0.3f; //temp
     public static final float ROTATIONAL_AIR_RESISTANCE = 0.3f; //temp
 
@@ -23,7 +22,7 @@ public class WorldConstants {
 
     public static final float SLIDE_FRICTION = 0.5f; //temp 
     public static final float ROLLING_FRICTION = 0.2f; //temp
-    public static final float Restitution = 0.35f; //temp
+    public static final float Restitution = 0.2f; //temp
 
     public static final float COLLISION_TOLERANCE = 0.04f; //temp
     public static final float BREAKING_THRESHOLD = 0.02f; //temp
