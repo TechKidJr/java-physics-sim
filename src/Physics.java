@@ -1,3 +1,5 @@
+import java.util.List;
+
 import javax.swing.Timer;
 import javax.vecmath.Vector3f;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
@@ -18,17 +20,17 @@ import Constants.WorldConstants;
 
 
 public class Physics{
-    private DiscreteDynamicsWorld dWorld;
+    public DiscreteDynamicsWorld dWorld;
     private Renderer render;
     private CollisionShape floor;
     private CollisionShape ceiling;
     private CollisionShape leftWall;
     private CollisionShape rightwall;
+    private List<PhysicsShape> shapes;
 
     public Physics(Renderer render){
 
         this.render = render;
-
         // World configs
         DefaultCollisionConfiguration collisionConfig = new DefaultCollisionConfiguration();
         CollisionDispatcher dispatch = new CollisionDispatcher(collisionConfig);
@@ -59,9 +61,9 @@ public class Physics{
         //ceiling configs
         Transform ceilingTransform = new Transform();
         ceilingTransform.setIdentity();
-        ceilingTransform.origin.set(0, 7f, 0);
+        ceilingTransform.origin.set(0, 0.6f, 0);
         MotionState cMotionState = new DefaultMotionState(ceilingTransform);
-        RigidBodyConstructionInfo ceilingInfo = new RigidBodyConstructionInfo(0f, cMotionState, ceiling, new Vector3f(0, 0, 0));
+        RigidBodyConstructionInfo ceilingInfo = new RigidBodyConstructionInfo(0f, cMotionState, ceiling);
         RigidBody ceilingRigidBody = new RigidBody(ceilingInfo);
 
         //left wall configs
@@ -117,7 +119,7 @@ public class Physics{
      */
     public RigidBody createRigidBox(float[] spawn, float[] rotationMatrix){
         CollisionShape boxShape = new BoxShape(new Vector3f(0.09f, 0.09f, 0.09f));
-        boxShape.setMargin(0.04f);
+        boxShape.setMargin(WorldConstants.COLLISION_TOLERANCE);
         Transform boxTransform = new Transform();
         boxTransform.setIdentity();
         boxTransform.origin.set(new Vector3f(spawn));
@@ -129,6 +131,7 @@ public class Physics{
         boxRigidBody.setDamping(WorldConstants.LINEAR_AIR_RESISTANCE, WorldConstants.ROTATIONAL_AIR_RESISTANCE);
         boxRigidBody.setFriction(WorldConstants.SLIDE_FRICTION);
         boxRigidBody.setRestitution(WorldConstants.Restitution);
+        boxRigidBody.setDeactivationTime(WorldConstants.STOP_TIME);
         boxRigidBody.activate();
         dWorld.addRigidBody(boxRigidBody);
         return boxRigidBody;
@@ -141,7 +144,7 @@ public class Physics{
      */ 
     public RigidBody createRigidSphere(float[] spawn){
         CollisionShape sphereShape = new SphereShape(0.09f);
-        sphereShape.setMargin(0.04f);
+        sphereShape.setMargin(WorldConstants.COLLISION_TOLERANCE);
         Transform sphereTransform = new Transform();
         sphereTransform.setIdentity();
         sphereTransform.origin.set(new Vector3f(spawn));
@@ -152,10 +155,35 @@ public class Physics{
         sphereRigidBody.setDamping(WorldConstants.LINEAR_AIR_RESISTANCE, WorldConstants.ROTATIONAL_AIR_RESISTANCE);
         sphereRigidBody.setFriction(WorldConstants.ROLLING_FRICTION);
         sphereRigidBody.setRestitution(WorldConstants.Restitution);
+        sphereRigidBody.setDeactivationTime(WorldConstants.STOP_TIME);
         sphereRigidBody.activate();
         dWorld.addRigidBody(sphereRigidBody);
         return sphereRigidBody;
 
+    }
+
+    public void usrCtrledGravity(float gravity){
+        Vector3f gForce = new Vector3f(0, gravity, 0);
+        dWorld.setGravity(gForce);
+        syncList();
+        for (PhysicsShape shape:shapes){
+            RigidBody rigidBody = shape.getRigidBody();
+            rigidBody.activate(true);
+            rigidBody.applyGravity();
+        }
+    }
+
+    public void usrCtrledAirResistance(float resistance){
+        syncList();
+        for (PhysicsShape shape:shapes){
+            RigidBody rigidBody = shape.getRigidBody();
+            rigidBody.activate(true);
+            rigidBody.applyDamping(resistance);
+        }
+    }
+
+    public void syncList(){
+        this.shapes = render.getObjects();
     }
 
     /**
@@ -189,4 +217,5 @@ public class Physics{
     public CollisionShape getRightWall(){
         return rightwall;
     }
+
 }

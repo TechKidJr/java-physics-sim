@@ -281,6 +281,11 @@ public class Renderer {
         appearance.setMaterial(material);
         return appearance;
     }
+
+    public List<PhysicsShape> getObjects(){
+        return this.objects;
+    }
+
 }
 
 
