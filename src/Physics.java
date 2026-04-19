@@ -4,8 +4,11 @@ import javax.swing.Timer;
 import javax.vecmath.Vector3f;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
+import com.bulletphysics.collision.broadphase.Dispatcher;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
+import com.bulletphysics.collision.narrowphase.ManifoldPoint;
+import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.SphereShape;
@@ -185,6 +188,33 @@ public class Physics{
     public void syncList(){
         this.shapes = render.getObjects();
     }
+      /**
+     * creates the collision affect if two objects are colliding.
+     */
+    public void collisionAffect(){
+        Dispatcher dispatcher = dWorld.getDispatcher();
+        int numManiFolds = dispatcher.getNumManifolds();
+
+        for (int i = 0; i < numManiFolds; i++){
+            PersistentManifold pManifold = dispatcher.getManifoldByIndexInternal(i);
+            float totalImpulse = 0f;
+
+            for (int j = 0; j < pManifold.getNumContacts(); j++){
+                totalImpulse += pManifold.getContactPoint(j).appliedImpulse;
+            }
+
+            if (totalImpulse > 400){
+                ManifoldPoint mPoint = pManifold.getContactPoint(0);
+                Vector3f pos = new Vector3f();
+                mPoint.getPositionWorldOnA(pos);
+            }
+
+        
+
+        }
+
+    }
+
 
     /**
      * Gets the floor object
